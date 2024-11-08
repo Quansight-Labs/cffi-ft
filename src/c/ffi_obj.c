@@ -185,6 +185,7 @@ static CTypeDescrObject *_ffi_type(FFIObject *ffi, PyObject *arg,
     */
     if ((accept & ACCEPT_STRING) && PyText_Check(arg)) {
         PyObject *types_dict = ffi->types_builder.types_dict;
+        /* The types_dict keeps the reference alive. Items are never removed */
         PyObject *x = PyDict_GetItem(types_dict, arg);
 
         if (x == NULL) {
@@ -206,11 +207,12 @@ static CTypeDescrObject *_ffi_type(FFIObject *ffi, PyObject *arg,
                sure that in any case the next _ffi_type() with the same
                'arg' will succeed early, in PyDict_GetItem() above.
             */
-            err = PyDict_SetItem(types_dict, arg, x);
-            Py_DECREF(x); /* we know it was written in types_dict (unless out
-                             of mem), so there is at least that ref left */
-            if (err < 0)
+            PyObject *value = PyDict_SetDefault(types_dict, arg, x);
+            if (value == NULL) {
                 return NULL;
+            }
+            Py_DECREF(x); /* we know types_dict holds a strong ref */
+            x = value;
         }
 
         if (CTypeDescr_Check(x))
