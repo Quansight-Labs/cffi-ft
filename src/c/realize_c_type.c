@@ -255,7 +255,7 @@ unexpected_fn_type(PyObject *x)
     buf[prefix_size] = '\0';
     assert(text2[-3] == '(');
     PyErr_Format(FFIError, "the type '%s%s' is a function type, not a "
-                           "pointer-to-function type", text1, text2);
+                           "pointer-to-function type", buf, text2);
     PyMem_Free(buf);
     return NULL;
 }
