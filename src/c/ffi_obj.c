@@ -25,7 +25,6 @@ struct FFIObject_s {
     PyObject_HEAD
     PyObject *gc_wrefs, *gc_wrefs_freelist;
     PyObject *init_once_cache;
-    struct _cffi_parse_info_s info;
     char ctx_is_static, ctx_is_nonempty;
     builder_c_t types_builder;
 };
@@ -33,8 +32,6 @@ struct FFIObject_s {
 static FFIObject *ffi_internal_new(PyTypeObject *ffitype,
                                  const struct _cffi_type_context_s *static_ctx)
 {
-    static _cffi_opcode_t internal_output[FFI_COMPLEXITY_OUTPUT];
-
     FFIObject *ffi;
     if (static_ctx != NULL) {
         ffi = (FFIObject *)PyObject_GC_New(FFIObject, ffitype);
@@ -54,9 +51,6 @@ static FFIObject *ffi_internal_new(PyTypeObject *ffitype,
     ffi->gc_wrefs = NULL;
     ffi->gc_wrefs_freelist = NULL;
     ffi->init_once_cache = NULL;
-    ffi->info.ctx = &ffi->types_builder.ctx;
-    ffi->info.output = internal_output;
-    ffi->info.output_size = FFI_COMPLEXITY_OUTPUT;
     ffi->ctx_is_static = (static_ctx != NULL);
     ffi->ctx_is_nonempty = (static_ctx != NULL);
     return ffi;
@@ -145,7 +139,8 @@ static PyObject *ffi_fetch_int_constant(FFIObject *ffi, const char *name,
 #define ACCEPT_ALL      (ACCEPT_STRING | ACCEPT_CTYPE | ACCEPT_CDATA)
 #define CONSIDER_FN_AS_FNPTR  8
 
-static CTypeDescrObject *_ffi_bad_type(FFIObject *ffi, const char *input_text)
+static PyObject *_ffi_bad_type(struct _cffi_parse_info_s *info,
+                               const char *input_text)
 {
     size_t length = strlen(input_text);
     char *extra;
@@ -155,7 +150,7 @@ static CTypeDescrObject *_ffi_bad_type(FFIObject *ffi, const char *input_text)
     }
     else {
         char *p;
-        size_t i, num_spaces = ffi->info.error_location;
+        size_t i, num_spaces = info->error_location;
         extra = alloca(length + num_spaces + 4);
         p = extra;
         *p++ = '\n';
@@ -173,7 +168,7 @@ static CTypeDescrObject *_ffi_bad_type(FFIObject *ffi, const char *input_text)
         *p++ = '^';
         *p++ = 0;
     }
-    PyErr_Format(FFIError, "%s%s", ffi->info.error_message, extra);
+    PyErr_Format(FFIError, "%s%s", info->error_message, extra);
     return NULL;
 }
 
@@ -190,12 +185,30 @@ static CTypeDescrObject *_ffi_type(FFIObject *ffi, PyObject *arg,
 
         if (x == NULL) {
             const char *input_text = PyText_AS_UTF8(arg);
-            int err, index = parse_c_type(&ffi->info, input_text);
-            if (index < 0)
-                return _ffi_bad_type(ffi, input_text);
-
-            x = realize_c_type_or_func(&ffi->types_builder,
-                                       ffi->info.output, index);
+            struct _cffi_parse_info_s info;
+            info.ctx = &ffi->types_builder.ctx;
+            info.output_size = FFI_COMPLEXITY_OUTPUT;
+#ifdef Py_GIL_DISABLED
+            info.output = PyMem_Malloc(FFI_COMPLEXITY_OUTPUT * sizeof(_cffi_opcode_t));
+            if (info.output == NULL) {
+                PyErr_NoMemory();
+                return NULL;
+            }
+#else
+            static _cffi_opcode_t internal_output[FFI_COMPLEXITY_OUTPUT];
+            info.output = internal_output;
+#endif
+            int index = parse_c_type(&info, input_text);
+            if (index < 0) {
+                x = _ffi_bad_type(&info, input_text);
+            }
+            else {
+                x = realize_c_type_or_func(&ffi->types_builder,
+                                           info.output, index);
+            }
+#ifdef Py_GIL_DISABLED
+            PyMem_Free(info.output);
+#endif
             if (x == NULL)
                 return NULL;
 

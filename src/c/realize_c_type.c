@@ -246,11 +246,17 @@ unexpected_fn_type(PyObject *x)
     CTypeDescrObject *ct = unwrap_fn_as_fnptr(x);
     char *text1 = ct->ct_name;
     char *text2 = text1 + ct->ct_name_position + 1;
+    size_t prefix_size = ct->ct_name_position - 2;
+    char *buf = PyMem_Malloc(prefix_size + 1);
+    if (buf == NULL) {
+        return NULL;
+    }
+    memcpy(buf, text1, prefix_size);
+    buf[prefix_size] = '\0';
     assert(text2[-3] == '(');
-    text2[-3] = '\0';
     PyErr_Format(FFIError, "the type '%s%s' is a function type, not a "
                            "pointer-to-function type", text1, text2);
-    text2[-3] = '(';
+    PyMem_Free(buf);
     return NULL;
 }
 
@@ -313,6 +319,17 @@ static void _unrealize_name(char *target, const char *srcname)
 static PyObject *                                              /* forward */
 _fetch_external_struct_or_union(const struct _cffi_struct_union_s *s,
                                 PyObject *included_ffis, int recursion);
+
+#ifdef Py_GIL_DISABLED
+static PyMutex _realize_mutex;
+# define LOCK_REALIZE()          PyMutex_Lock(&_realize_mutex)
+# define UNLOCK_REALIZE()        PyMutex_Unlock(&_realize_mutex)
+# define ASSERT_REALIZE_LOCKED() assert((_realize_mutex._bits & 0x1) != 0);
+#else
+# define LOCK_REALIZE()          ((void)0)
+# define UNLOCK_REALIZE()        ((void)0)
+# define ASSERT_REALIZE_LOCKED() ((void)0)
+#endif
 
 static PyObject *
 _realize_c_struct_or_union(builder_c_t *builder, int sindex)
@@ -639,14 +656,22 @@ realize_c_type_or_func_now(builder_c_t *builder, _cffi_opcode_t op,
     return x;
 }
 
+#ifdef Py_GIL_DISABLED
+__thread int _realize_recursion_level;
+#else
 static int _realize_recursion_level;
+#endif
 
 static PyObject *
 realize_c_type_or_func(builder_c_t *builder,
                         _cffi_opcode_t opcodes[], int index)
 {
     PyObject *x;
-     _cffi_opcode_t op = opcodes[index];
+#ifdef Py_GIL_DISABLED
+    _cffi_opcode_t op = cffi_atomic_load(&opcodes[index]);
+#else
+    _cffi_opcode_t op = opcodes[index];
+#endif
 
     if ((((uintptr_t)op) & 1) == 0) {
         x = (PyObject *)op;
@@ -666,12 +691,33 @@ realize_c_type_or_func(builder_c_t *builder,
     x = realize_c_type_or_func_now(builder, op, opcodes, index);
     _realize_recursion_level--;
 
-    if (x != NULL && opcodes == builder->ctx.types && opcodes[index] != x) {
+    if (x == NULL) {
+        return NULL;
+    }
+
+    LOCK_REALIZE();
+    if (opcodes == builder->ctx.types && opcodes[index] != x) {
         assert((((uintptr_t)x) & 1) == 0);
+
+#ifdef Py_GIL_DISABLED
+        if ((((uintptr_t)opcodes[index]) & 1) == 0) {
+            /* Another thread realized this opcode already */
+            Py_DECREF(x);
+            x = (PyObject *)opcodes[index];
+            Py_INCREF(x);
+        }
+        else {
+            Py_INCREF(x);
+            cffi_atomic_store(&opcodes[index], x);
+        }
+#else
         assert((((uintptr_t)opcodes[index]) & 1) == 1);
         Py_INCREF(x);
         opcodes[index] = x;
+#endif
     }
+    UNLOCK_REALIZE();
+
     return x;
 }
 
