@@ -8182,6 +8182,10 @@ init_cffi_backend(void)
     if (m == NULL)
         INITERROR;
 
+#ifdef Py_GIL_DISABLED
+    PyUnstable_Module_SetGIL(m, Py_MOD_GIL_NOT_USED);
+#endif
+
     if (unique_cache == NULL) {
         unique_cache = PyDict_New();
         if (unique_cache == NULL)
