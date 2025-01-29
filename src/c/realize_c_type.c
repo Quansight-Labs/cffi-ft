@@ -10,7 +10,7 @@ typedef struct {
 
 
 static PyObject *all_primitives[_CFFI__NUM_PRIM];
-static CTypeDescrObject *g_ct_voidp, *g_ct_chararray, *g_file_struct;
+static CTypeDescrObject *g_ct_voidp, *g_ct_chararray, *g_ct_int, *g_file_struct;
 
 static PyObject *build_primitive_type(int num);   /* forward */
 
@@ -50,8 +50,12 @@ static int init_global_types_dict(PyObject *ffi_type_dict)
         return -1;
     g_ct_chararray = (CTypeDescrObject *)ct2;
 
+    g_ct_int = get_primitive_type(_CFFI_PRIM_INT);         // 'int'
+    if (g_ct_int == NULL)
+        return -1;
+
     ct2 = new_struct_or_union_type("FILE",
-                                   CT_STRUCT | CT_IS_FILE);
+                                   CT_STRUCT | CT_IS_FILE); // 'FILE'
     if (ct2 == NULL)
         return -1;
     g_file_struct = (CTypeDescrObject *)ct2;
@@ -75,6 +79,11 @@ static int init_global_types_dict(PyObject *ffi_type_dict)
 #endif
 
     return 0;
+}
+
+static CTypeDescrObject *_get_ct_int(void)
+{
+    return g_ct_int;
 }
 
 static void free_builder_c(builder_c_t *builder, int ctx_is_static)

@@ -3021,16 +3021,8 @@ static cif_description_t *
 fb_prepare_cif(PyObject *fargs, CTypeDescrObject *, Py_ssize_t, ffi_abi);
                                                                    /*forward*/
 
-static PyObject *new_primitive_type(const char *name);             /*forward*/
-
-static CTypeDescrObject *_get_ct_int(void)
-{
-    static CTypeDescrObject *ct_int = NULL;
-    if (ct_int == NULL) {
-        ct_int = (CTypeDescrObject *)new_primitive_type("int");
-    }
-    return ct_int;
-}
+static CTypeDescrObject *_get_ct_int(void);
+/* forward, implemented in realize_c_type.c */
 
 static Py_ssize_t
 _prepare_pointer_call_argument(CTypeDescrObject *ctptr, PyObject *init,
