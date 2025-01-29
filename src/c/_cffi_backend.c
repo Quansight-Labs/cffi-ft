@@ -2650,11 +2650,14 @@ cdata_slice(CDataObject *cd, PySliceObject *slice)
     if (ct == NULL)
         return NULL;
 
+    Py_BEGIN_CRITICAL_SECTION(ct);
     if (ct->ct_stuff == NULL) {
         ct->ct_stuff = new_array_type(ct, -1);
-        if (ct->ct_stuff == NULL)
-            return NULL;
     }
+    Py_END_CRITICAL_SECTION();
+
+    if (ct->ct_stuff == NULL)
+        return NULL;
     ct = (CTypeDescrObject *)ct->ct_stuff;
 
     cdata = cd->c_data + ct->ct_itemdescr->ct_size * bounds[0];
