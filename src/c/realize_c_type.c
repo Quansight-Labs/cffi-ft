@@ -10,7 +10,7 @@ typedef struct {
 
 
 static PyObject *all_primitives[_CFFI__NUM_PRIM];
-static CTypeDescrObject *g_ct_voidp, *g_ct_chararray;
+static CTypeDescrObject *g_ct_voidp, *g_ct_chararray, *g_file_struct;
 
 static PyObject *build_primitive_type(int num);   /* forward */
 
@@ -49,6 +49,12 @@ static int init_global_types_dict(PyObject *ffi_type_dict)
     if (ct2 == NULL)
         return -1;
     g_ct_chararray = (CTypeDescrObject *)ct2;
+
+    ct2 = new_struct_or_union_type("FILE",
+                                   CT_STRUCT | CT_IS_FILE);
+    if (ct2 == NULL)
+        return -1;
+    g_file_struct = (CTypeDescrObject *)ct2;
 
     pnull = new_simple_cdata(NULL, g_ct_voidp);
     if (pnull == NULL)
@@ -354,12 +360,8 @@ _realize_c_struct_or_union(builder_c_t *builder, int sindex)
 
     if (sindex == _CFFI__IO_FILE_STRUCT) {
         /* returns a single global cached opaque type */
-        static PyObject *file_struct = NULL;
-        if (file_struct == NULL)
-            file_struct = new_struct_or_union_type("FILE",
-                                                   CT_STRUCT | CT_IS_FILE);
-        Py_XINCREF(file_struct);
-        return file_struct;
+        Py_INCREF(g_file_struct);
+        return g_file_struct;
     }
 
     s = &builder->ctx.struct_unions[sindex];
