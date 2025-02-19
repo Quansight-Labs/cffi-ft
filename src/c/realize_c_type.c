@@ -401,7 +401,7 @@ _realize_c_struct_or_union(builder_c_t *builder, int sindex)
                 ct->ct_size = (Py_ssize_t)s->size;
                 ct->ct_length = s->alignment;   /* may be -1 */
                 ct->ct_flags &= ~CT_IS_OPAQUE;
-                ct->ct_flags |= CT_LAZY_FIELD_LIST;
+                ct->ct_flags_mut |= CT_LAZY_FIELD_LIST;
                 ct->ct_extra = builder;
             }
             else
@@ -777,7 +777,7 @@ static int do_realize_lazy_struct(CTypeDescrObject *ct)
     /* This is called by force_lazy_struct() in _cffi_backend.c */
     assert(ct->ct_flags & (CT_STRUCT | CT_UNION));
 
-    if (ct->ct_flags & CT_LAZY_FIELD_LIST) {
+    if (ct->ct_flags_mut & CT_LAZY_FIELD_LIST) {
         builder_c_t *builder;
         char *p;
         int n, i, sflags;
@@ -880,7 +880,7 @@ static int do_realize_lazy_struct(CTypeDescrObject *ct)
         }
 
         assert(ct->ct_stuff != NULL);
-        ct->ct_flags &= ~CT_LAZY_FIELD_LIST;
+        ct->ct_flags_mut &= ~CT_LAZY_FIELD_LIST;
         Py_DECREF(res);
         return 1;
     }

@@ -310,7 +310,8 @@ typedef struct _ctypedescr {
     Py_ssize_t ct_length;   /* length of arrays, or -1 if unknown;
                                or alignment of primitive and struct types;
                                always -1 for pointers */
-    int ct_flags;           /* CT_xxx flags */
+    int ct_flags;           /* Immutable CT_xxx flags */
+    int ct_flags_mut;       /* Mutable flags (e.g., CT_LAZY_FIELD_LIST) */
 
     int ct_name_position;   /* index in ct_name of where to put a var name */
     char ct_name[1];        /* string, e.g. "int *" for pointers to ints */
@@ -1928,7 +1929,7 @@ get_alignment(CTypeDescrObject *ct)
     if ((ct->ct_flags & (CT_PRIMITIVE_ANY|CT_STRUCT|CT_UNION)) &&
         !(ct->ct_flags & CT_IS_OPAQUE)) {
         align = ct->ct_length;
-        if (align == -1 && (ct->ct_flags & CT_LAZY_FIELD_LIST)) {
+        if (align == -1 && (ct->ct_flags_mut & CT_LAZY_FIELD_LIST)) {
             force_lazy_struct(ct);
             align = ct->ct_length;
         }
@@ -4958,6 +4959,7 @@ static PyObject *new_primitive_type(const char *name)
     td->ct_length = ptypes->align;
     td->ct_extra = ffitype;
     td->ct_flags = ptypes->flags;
+    td->ct_flags_mut = 0;
     if (td->ct_flags & (CT_PRIMITIVE_SIGNED | CT_PRIMITIVE_CHAR)) {
         if (td->ct_size <= (Py_ssize_t)sizeof(long))
             td->ct_flags |= CT_PRIMITIVE_FITS_LONG;
@@ -5011,6 +5013,7 @@ static PyObject *new_pointer_type(CTypeDescrObject *ctitem)
         ((ctitem->ct_flags & CT_PRIMITIVE_CHAR) &&
          ctitem->ct_size == sizeof(char)))
         td->ct_flags |= CT_IS_VOIDCHAR_PTR;   /* 'void *' or 'char *' only */
+    td->ct_flags_mut = 0;
     unique_key[0] = ctitem;
     return get_unique_type(td, unique_key, 1);
 }
@@ -5091,6 +5094,7 @@ new_array_type(CTypeDescrObject *ctptr, Py_ssize_t length)
     td->ct_size = arraysize;
     td->ct_length = length;
     td->ct_flags = flags;
+    td->ct_flags_mut = 0;
     unique_key[0] = ctptr;
     unique_key[1] = (void *)length;
     return get_unique_type(td, unique_key, 2);
@@ -5107,6 +5111,7 @@ static PyObject *new_void_type(void)
     memcpy(td->ct_name, "void", name_size);
     td->ct_size = -1;
     td->ct_flags = CT_VOID | CT_IS_OPAQUE;
+    td->ct_flags_mut = 0;
     td->ct_name_position = strlen("void");
     unique_key[0] = "void";
     return get_unique_type(td, unique_key, 1);
@@ -5127,6 +5132,7 @@ static PyObject *new_struct_or_union_type(const char *name, int flag)
     td->ct_size = -1;
     td->ct_length = -1;
     td->ct_flags = flag | CT_IS_OPAQUE;
+    td->ct_flags_mut = 0;
     td->ct_extra = NULL;
     memcpy(td->ct_name, name, namelen + 1);
     td->ct_name_position = namelen;
@@ -6002,6 +6008,7 @@ static CTypeDescrObject *fb_prepare_ctype(struct funcbuilder_s *fb,
     fct->ct_extra = NULL;
     fct->ct_size = sizeof(void(*)(void));
     fct->ct_flags = CT_FUNCTIONPTR;
+    fct->ct_flags_mut = 0;
     return fct;
 
  error:
@@ -6707,6 +6714,7 @@ static PyObject *b_new_enum_type(PyObject *self, PyObject *args)
     td->ct_length = basetd->ct_length;   /* alignment */
     td->ct_extra = basetd->ct_extra;     /* ffi type  */
     td->ct_flags = basetd->ct_flags | CT_IS_ENUM;
+    td->ct_flags_mut = basetd->ct_flags_mut;
     td->ct_name_position = name_size - 1;
     return (PyObject *)td;
 
