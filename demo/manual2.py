@@ -1,5 +1,5 @@
 from __future__ import print_function
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 
 ffi = _cffi_backend.FFI(b"manual2",
     _version = 0x2601,

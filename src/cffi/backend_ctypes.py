@@ -737,9 +737,9 @@ class CTypesBackend(object):
                                  totalsize=-1, totalalignment=-1, sflags=0,
                                  pack=0):
         if totalsize >= 0 or totalalignment >= 0:
-            raise NotImplementedError("the ctypes backend of CFFI does not support "
+            raise NotImplementedError("the ctypes backend of CFFI_ft does not support "
                                       "structures completed by verify(); please "
-                                      "compile and install the _cffi_backend module.")
+                                      "compile and install the _cffi_ft_backend module.")
         struct_or_union = CTypesStructOrUnion._ctype
         fnames = [fname for (fname, BField, bitsize) in fields]
         btypes = [BField for (fname, BField, bitsize) in fields]

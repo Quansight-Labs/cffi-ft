@@ -243,7 +243,7 @@ static PyObject *_cffi_init(const char *module_name, Py_ssize_t version,
         (void *)ctx,
     };
 
-    module = PyImport_ImportModule("_cffi_backend");
+    module = PyImport_ImportModule("_cffi_ft_backend");
     if (module == NULL)
         goto failure;
 

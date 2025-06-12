@@ -122,12 +122,12 @@ In order of complexity:
         ffibuilder.compile(verbose=True)
 
 * Note that some bundler tools that try to find all modules used by a
-  project, like PyInstaller, will miss ``_cffi_backend`` in the
+  project, like PyInstaller, will miss ``_cffi_ft_backend`` in the
   out-of-line mode because your program contains no explicit ``import
-  cffi`` or ``import _cffi_backend``.  You need to add
-  ``_cffi_backend`` explicitly (as a "hidden import" in PyInstaller,
+  cffi`` or ``import _cffi_ft_backend``.  You need to add
+  ``_cffi_ft_backend`` explicitly (as a "hidden import" in PyInstaller,
   but it can also be done more generally by adding the line ``import
-  _cffi_backend`` in your main program).
+  _cffi_ft_backend`` in your main program).
 
 Note that CFFI actually contains two different ``FFI`` classes.  The
 page `Using the ffi/lib objects`_ describes the common functionality.
@@ -145,11 +145,11 @@ from the different ``ffi`` object that you get by later saying
 
 The reason for this split of functionality is that a regular program
 using CFFI out-of-line does not need to import the ``cffi`` pure
-Python package at all.  (Internally it still needs ``_cffi_backend``,
+Python package at all.  (Internally it still needs ``_cffi_ft_backend``,
 a C extension module that comes with CFFI; this is why CFFI is also
 listed in ``install_requires=..`` above.  In the future this might be
 split into a different PyPI package that only installs
-``_cffi_backend``.)
+``_cffi_ft_backend``.)
 
 Note that a few small differences do exist: notably, ``from _foo import
 ffi`` returns an object of a type written in C, which does not let you
@@ -1006,9 +1006,9 @@ is hard-coded as a built-in module in PyPy:
 
 .. code-block:: python
 
-    if '_cffi_backend' in sys.builtin_module_names:   # PyPy
-        import _cffi_backend
-        requires_cffi = "cffi==" + _cffi_backend.__version__
+    if '_cffi_ft_backend' in sys.builtin_module_names:   # PyPy
+        import _cffi_ft_backend
+        requires_cffi = "cffi==" + _cffi_ft_backend.__version__
     else:
         requires_cffi = "cffi>=1.0.0"
 

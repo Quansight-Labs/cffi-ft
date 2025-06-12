@@ -5,7 +5,7 @@ from cffi import CDefError
 from cffi import recompiler
 from testing.support import *
 from testing.support import _verify, extra_compile_args, is_musl
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 
 pytestmark = [
     pytest.mark.thread_unsafe,

@@ -13,7 +13,7 @@ def test_simple():
     target = udir.join('test_simple.py')
     make_py_source(ffi, 'test_simple', str(target))
     assert target.read() == r"""# auto-generated file
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 
 ffi = _cffi_backend.FFI('test_simple',
     _version = 0x2601,
@@ -28,7 +28,7 @@ def test_global_constant():
     target = udir.join('test_valid_global_constant.py')
     make_py_source(ffi, 'test_valid_global_constant', str(target))
     assert target.read() == r"""# auto-generated file
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 
 ffi = _cffi_backend.FFI('test_valid_global_constant',
     _version = 0x2601,
@@ -58,7 +58,7 @@ def test_typename():
     target = udir.join('test_typename.py')
     make_py_source(ffi, 'test_typename', str(target))
     assert target.read() == r"""# auto-generated file
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 
 ffi = _cffi_backend.FFI('test_typename',
     _version = 0x2601,
@@ -73,7 +73,7 @@ def test_enum():
     target = udir.join('test_enum.py')
     make_py_source(ffi, 'test_enum', str(target))
     assert target.read() == r"""# auto-generated file
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 
 ffi = _cffi_backend.FFI('test_enum',
     _version = 0x2601,
@@ -89,7 +89,7 @@ def test_struct():
     target = udir.join('test_struct.py')
     make_py_source(ffi, 'test_struct', str(target))
     assert target.read() == r"""# auto-generated file
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 
 ffi = _cffi_backend.FFI('test_struct',
     _version = 0x2601,
@@ -105,7 +105,7 @@ def test_include():
     target = udir.join('test_include.py')
     make_py_source(ffi, 'test_include', str(target))
     assert target.read() == r"""# auto-generated file
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 
 ffi = _cffi_backend.FFI('test_include',
     _version = 0x2601,
@@ -119,7 +119,7 @@ ffi = _cffi_backend.FFI('test_include',
     target2 = udir.join('test2_include.py')
     make_py_source(ffi2, 'test2_include', str(target2))
     assert target2.read() == r"""# auto-generated file
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 from test_include import ffi as _ffi0
 
 ffi = _cffi_backend.FFI('test2_include',
@@ -135,7 +135,7 @@ def test_negative_constant():
     target = udir.join('test_negative_constant.py')
     make_py_source(ffi, 'test_negative_constant', str(target))
     assert target.read() == r"""# auto-generated file
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 
 ffi = _cffi_backend.FFI('test_negative_constant',
     _version = 0x2601,
@@ -154,7 +154,7 @@ def test_struct_included():
     target = udir.join('test_struct_included.py')
     make_py_source(ffi, 'test_struct_included', str(target))
     assert target.read() == r"""# auto-generated file
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 from test_struct_included_base import ffi as _ffi0
 
 ffi = _cffi_backend.FFI('test_struct_included',
@@ -181,7 +181,7 @@ def test_array():
     target = udir.join('test_array.py')
     make_py_source(ffi, 'test_array', str(target))
     assert target.read() == r"""# auto-generated file
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 
 ffi = _cffi_backend.FFI('test_array',
     _version = 0x2601,
@@ -203,7 +203,7 @@ def test_global_var():
     target = udir.join('test_global_var.py')
     make_py_source(ffi, 'test_global_var', str(target))
     assert target.read() == r"""# auto-generated file
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 
 ffi = _cffi_backend.FFI('test_global_var',
     _version = 0x2601,
@@ -218,7 +218,7 @@ def test_bitfield():
     target = udir.join('test_bitfield.py')
     make_py_source(ffi, 'test_bitfield', str(target))
     assert target.read() == r"""# auto-generated file
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 
 ffi = _cffi_backend.FFI('test_bitfield',
     _version = 0x2601,

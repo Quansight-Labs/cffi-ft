@@ -227,7 +227,7 @@ def _locate_engine_class(ffi, force_generic_engine):
             force_generic_engine = True
         else:
             try:
-                import _cffi_backend
+                import _cffi_ft_backend as _cffi_backend
             except ImportError:
                 _cffi_backend = '?'
             if ffi._backend is not _cffi_backend:

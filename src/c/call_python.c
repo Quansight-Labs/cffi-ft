@@ -47,7 +47,7 @@ static PyObject *_get_interpstate_dict(void)
     /* from there on, we know the (sub-)interpreter is still valid */
 
     if (attr_name == NULL) {
-        attr_name = PyText_InternFromString("__cffi_backend_extern_py");
+        attr_name = PyText_InternFromString("__cffi_ft_backend_extern_py");
         if (attr_name == NULL)
             goto error;
     }

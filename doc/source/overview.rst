@@ -646,7 +646,7 @@ functions.)
 The generated piece of C code should be the same independently on the
 platform on which you run it (or the Python version), so in simple cases
 you can directly distribute the pre-generated C code and treat it as a
-regular C extension module (which depends on the ``_cffi_backend``
+regular C extension module (which depends on the ``_cffi_ft_backend``
 module, on CPython).  The special Setuptools lines in the `example
 above`__ are meant for the more complicated cases where we need to
 regenerate the C sources as well---e.g. because the Python script that

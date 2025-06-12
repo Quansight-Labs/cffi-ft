@@ -782,7 +782,7 @@ static PyMethodDef ctypedescr_methods[] = {
 
 static PyTypeObject CTypeDescr_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "_cffi_backend.CType",
+    "_cffi_ft_backend.CType",
     offsetof(CTypeDescrObject, ct_name),
     sizeof(char),
     (destructor)ctypedescr_dealloc,             /* tp_dealloc */
@@ -824,7 +824,7 @@ get_field_name(CTypeDescrObject *ct, CFieldObject *cf)
         if (d_value == (PyObject *)cf)
             return d_key;
     }
-    Py_FatalError("_cffi_backend: get_field_name()");
+    Py_FatalError("_cffi_ft_backend: get_field_name()");
     return NULL;
 }
 
@@ -850,7 +850,7 @@ static PyMemberDef cfield_members[] = {
 
 static PyTypeObject CField_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "_cffi_backend.CField",
+    "_cffi_ft_backend.CField",
     sizeof(CFieldObject),
     0,
     (destructor)cfield_dealloc,                 /* tp_dealloc */
@@ -3530,7 +3530,7 @@ static PyMethodDef cdata_methods[] = {
 
 static PyTypeObject CData_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "_cffi_backend._CDataBase",
+    "_cffi_ft_backend._CDataBase",
     sizeof(CDataObject),
     0,
     (destructor)cdata_dealloc,                  /* tp_dealloc */
@@ -3574,7 +3574,7 @@ static PyTypeObject CData_Type = {
 
 static PyTypeObject CDataOwning_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "_cffi_backend.__CDataOwn",
+    "_cffi_ft_backend.__CDataOwn",
     sizeof(CDataObject),
     0,
     (destructor)cdataowning_dealloc,            /* tp_dealloc */
@@ -3617,7 +3617,7 @@ static PyTypeObject CDataOwning_Type = {
 
 static PyTypeObject CDataOwningGC_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "_cffi_backend.__CDataOwnGC",
+    "_cffi_ft_backend.__CDataOwnGC",
     sizeof(CDataObject_own_structptr),
     0,
     (destructor)cdataowninggc_dealloc,          /* tp_dealloc */
@@ -3661,7 +3661,7 @@ static PyTypeObject CDataOwningGC_Type = {
 
 static PyTypeObject CDataFromBuf_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "_cffi_backend.__CDataFromBuf",
+    "_cffi_ft_backend.__CDataFromBuf",
     sizeof(CDataObject_frombuf),
     0,
     (destructor)cdatafrombuf_dealloc,           /* tp_dealloc */
@@ -3705,7 +3705,7 @@ static PyTypeObject CDataFromBuf_Type = {
 
 static PyTypeObject CDataGCP_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "_cffi_backend.__CDataGCP",
+    "_cffi_ft_backend.__CDataGCP",
     sizeof(CDataObject_gcp),
     0,
     (destructor)cdatagcp_dealloc,               /* tp_dealloc */
@@ -3790,7 +3790,7 @@ cdataiter_dealloc(CDataIterObject *it)
 
 static PyTypeObject CDataIter_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "_cffi_backend.__CData_iterator",       /* tp_name */
+    "_cffi_ft_backend.__CData_iterator",       /* tp_name */
     sizeof(CDataIterObject),                /* tp_basicsize */
     0,                                      /* tp_itemsize */
     /* methods */
@@ -4565,7 +4565,7 @@ static PyMethodDef dl_methods[] = {
 
 static PyTypeObject dl_type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "_cffi_backend.CLibrary",           /* tp_name */
+    "_cffi_ft_backend.CLibrary",           /* tp_name */
     sizeof(DynLibObject),               /* tp_basicsize */
     0,                                  /* tp_itemsize */
     /* methods */
@@ -8207,7 +8207,7 @@ static struct { const char *name; int value; } all_dlopen_flags[] = {
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef FFIBackendModuleDef = {
   PyModuleDef_HEAD_INIT,
-  "_cffi_backend",
+  "_cffi_ft_backend",
   NULL,
   -1,
   FFIBackendMethods,
@@ -8216,7 +8216,7 @@ static struct PyModuleDef FFIBackendModuleDef = {
 #define INITERROR return NULL
 
 PyMODINIT_FUNC
-PyInit__cffi_backend(void)
+PyInit__cffi_ft_backend(void)
 #else
 #define INITERROR return
 
@@ -8256,7 +8256,7 @@ init_cffi_backend(void)
 #if PY_MAJOR_VERSION >= 3
     m = PyModule_Create(&FFIBackendModuleDef);
 #else
-    m = Py_InitModule("_cffi_backend", FFIBackendMethods);
+    m = Py_InitModule("_cffi_ft_backend", FFIBackendMethods);
 #endif
 
     if (m == NULL)
@@ -8276,7 +8276,7 @@ init_cffi_backend(void)
     for (i = 0; all_types[i] != NULL; i++) {
         PyTypeObject *tp = all_types[i];
         PyObject *tpo = (PyObject *)tp;
-        if (strncmp(tp->tp_name, "_cffi_backend.", 14) != 0) {
+        if (strncmp(tp->tp_name, "_cffi_ft_backend.", 17) != 0) {
             PyErr_Format(PyExc_ImportError,
                          "'%s' is an ill-formed type name", tp->tp_name);
             INITERROR;
@@ -8285,12 +8285,12 @@ init_cffi_backend(void)
             INITERROR;
 
         Py_INCREF(tpo);
-        if (PyModule_AddObject(m, tp->tp_name + 14, tpo) < 0)
+        if (PyModule_AddObject(m, tp->tp_name + 17, tpo) < 0)
             INITERROR;
     }
 
     if (!init_done) {
-        v = PyText_FromString("_cffi_backend");
+        v = PyText_FromString("_cffi_ft_backend");
         if (v == NULL || PyDict_SetItemString(CData_Type.tp_dict,
                                               "__module__", v) < 0)
             INITERROR;

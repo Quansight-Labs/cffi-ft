@@ -7,7 +7,7 @@ COMMON_TYPES = {}
 
 try:
     # fetch "bool" and all simple Windows types
-    from _cffi_backend import _get_common_types
+    from _cffi_ft_backend import _get_common_types
     _get_common_types(COMMON_TYPES)
 except ImportError:
     pass

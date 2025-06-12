@@ -1054,7 +1054,7 @@ static int _cffi_init(void)
 {
     PyObject *module, *c_api_object = NULL;
 
-    module = PyImport_ImportModule("_cffi_backend");
+    module = PyImport_ImportModule("_cffi_ft_backend");
     if (module == NULL)
         goto failure;
 

@@ -7,7 +7,7 @@ from __future__ import unicode_literals
 #
 #
 #
-from _cffi_backend import FFI
+from _cffi_ft_backend import FFI
 
 
 def test_cast():

@@ -140,7 +140,7 @@ static void _cffi_py_initialize(void)
 
 static int _cffi_initialize_python(void)
 {
-    /* This initializes Python, imports _cffi_backend, and then the
+    /* This initializes Python, imports _cffi_ft_backend, and then the
        present .dll/.so is set up as a CPython C extension module.
     */
     int result;
@@ -190,7 +190,7 @@ static int _cffi_initialize_python(void)
        only hope that the Python code did correctly set up the
        corresponding @ffi.def_extern() function.  Otherwise, the
        general logic of ``extern "Python"`` functions (inside the
-       _cffi_backend module) will find that the reference is still
+       _cffi_ft_backend module) will find that the reference is still
        missing and print an error.
      */
     result = 0;
@@ -226,9 +226,9 @@ static int _cffi_initialize_python(void)
         if (f != NULL && f != Py_None) {
             PyFile_WriteString("\nFrom: " _CFFI_MODULE_NAME
                                "\ncompiled with cffi version: 1.18.0.dev0"
-                               "\n_cffi_backend module: ", f);
+                               "\n_cffi_ft_backend module: ", f);
             modules = PyImport_GetModuleDict();
-            mod = PyDict_GetItemString(modules, "_cffi_backend");
+            mod = PyDict_GetItemString(modules, "_cffi_ft_backend");
             if (mod == NULL) {
                 PyFile_WriteString("not loaded", f);
             }
@@ -476,7 +476,7 @@ static _cffi_call_python_fnptr _cffi_start_python(void)
                '_cffi_call_python' without also seeing the rest of the
                data initialized.  However, this is not possible.  But
                the new value of '_cffi_call_python' is the function
-               'cffi_call_python()' from _cffi_backend.  So:  */
+               'cffi_call_python()' from _cffi_ft_backend.  So:  */
             cffi_write_barrier();
             /* ^^^ we put a write barrier here, and a corresponding
                read barrier at the start of cffi_call_python().  This

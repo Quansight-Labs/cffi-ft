@@ -1,6 +1,6 @@
 import sys
 import pytest
-import _cffi_backend as _cffi1_backend
+import _cffi_ft_backend as _cffi1_backend
 
 
 def test_ffi_new():
