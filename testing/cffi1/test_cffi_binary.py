@@ -1,6 +1,6 @@
 import sys, os
 import pytest
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 from testing.support import is_musl
 
 def test_no_unknown_exported_symbols():
@@ -22,6 +22,6 @@ def test_no_unknown_exported_symbols():
         # a statically-linked libffi will always appear here without header hackage, ignore it if it's internal
         if name.startswith('ffi_') and 'Base' in line:
             continue
-        if name not in ('init_cffi_backend', 'PyInit__cffi_backend', 'cffistatic_ffi_call'):
+        if name not in ('init_cffi_ft_backend', 'PyInit__cffi_ft_backend', 'cffistatic_ffi_call'):
             raise Exception("Unexpected exported name %r" % (name,))
     g.close()

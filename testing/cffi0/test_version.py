@@ -1,6 +1,6 @@
 import os, sys
 import pytest
-import cffi, _cffi_backend
+import cffi, _cffi_ft_backend as _cffi_backend
 from pathlib import Path
 
 def setup_module(mod):

@@ -12,7 +12,7 @@ if __name__ == '__main__':
     standard = '__pypy__' not in sys.builtin_module_names
     setup(packages=['cffi'],
           requires=['pycparser'],
-          ext_modules=[Extension(name = '_cffi_backend',
+          ext_modules=[Extension(name = '_cffi_ft_backend',
                                  include_dirs=include_dirs,
                                  sources=sources,
                                  libraries=libraries,

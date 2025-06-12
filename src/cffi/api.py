@@ -44,19 +44,19 @@ class FFI(object):
         """
         if backend is None:
             # You need PyPy (>= 2.0 beta), or a CPython (>= 2.6) with
-            # _cffi_backend.so compiled.
-            import _cffi_backend as backend
+            # _cffi_ft_backend.so compiled.
+            import _cffi_ft_backend as backend
             from . import __version__
             if backend.__version__ != __version__:
                 # bad version!  Try to be as explicit as possible.
                 if hasattr(backend, '__file__'):
                     # CPython
-                    raise Exception("Version mismatch: this is the 'cffi' package version %s, located in %r.  When we import the top-level '_cffi_backend' extension module, we get version %s, located in %r.  The two versions should be equal; check your installation." % (
+                    raise Exception("Version mismatch: this is the 'cffi' package version %s, located in %r.  When we import the top-level '_cffi_ft_backend' extension module, we get version %s, located in %r.  The two versions should be equal; check your installation." % (
                         __version__, __file__,
                         backend.__version__, backend.__file__))
                 else:
                     # PyPy
-                    raise Exception("Version mismatch: this is the 'cffi' package version %s, located in %r.  This interpreter comes with a built-in '_cffi_backend' module, which is version %s.  The two versions should be equal; check your installation." % (
+                    raise Exception("Version mismatch: this is the 'cffi' package version %s, located in %r.  This interpreter comes with a built-in '_cffi_ft_backend' module, which is version %s.  The two versions should be equal; check your installation." % (
                         __version__, __file__, backend.__version__))
             # (If you insist you can also try to pass the option
             # 'backend=backend_ctypes.CTypesBackend()', but don't
@@ -88,7 +88,7 @@ class FFI(object):
             self.BVoidP = self._get_cached_btype(model.voidp_type)
             self.BCharA = self._get_cached_btype(model.char_array_type)
         if isinstance(backend, types.ModuleType):
-            # _cffi_backend: attach these constants to the class
+            # _cffi_ft_backend: attach these constants to the class
             if not hasattr(FFI, 'NULL'):
                 FFI.NULL = self.cast(self.BVoidP, 0)
                 FFI.CData, FFI.CType = backend._get_types()

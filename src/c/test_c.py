@@ -21,14 +21,14 @@ def _setup_path():
     import os, sys
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 _setup_path()
-from _cffi_backend import *
-from _cffi_backend import _get_types, _get_common_types
+from _cffi_ft_backend import *
+from _cffi_ft_backend import _get_types, _get_common_types
 try:
-    from _cffi_backend import _testfunc
+    from _cffi_ft_backend import _testfunc
 except ImportError:
     def _testfunc(num):
         pytest.skip("_testunc() not available")
-from _cffi_backend import __version__
+from _cffi_ft_backend import __version__
 
 
 @contextlib.contextmanager
@@ -65,7 +65,7 @@ def _assert_unraisable(error_type: type[Exception] | None, message: str = '', tr
 import sys
 assert __version__ == "1.18.0.dev0", ("This test_c.py file is for testing a version"
                                  " of cffi that differs from the one that we"
-                                 " get from 'import _cffi_backend'")
+                                 " get from 'import _cffi_ft_backend'")
 if sys.version_info < (3,):
     type_or_class = "type"
     mandatory_b_prefix = ''
@@ -163,7 +163,7 @@ def test_cast_to_signed_char():
     p = new_primitive_type("signed char")
     x = cast(p, -65 + 17*256)
     assert repr(x) == "<cdata 'signed char' -65>"
-    assert repr(type(x)) == "<%s '_cffi_backend._CDataBase'>" % type_or_class
+    assert repr(type(x)) == "<%s '_cffi_ft_backend._CDataBase'>" % type_or_class
     assert int(x) == -65
     x = cast(p, -66 + (1<<199)*256)
     assert repr(x) == "<cdata 'signed char' -66>"
@@ -2457,7 +2457,7 @@ def test_buffer():
     c = newp(BCharArray, b"hi there")
     #
     buf = buffer(c)
-    assert repr(buf).startswith('<_cffi_backend.buffer object at 0x')
+    assert repr(buf).startswith('<_cffi_ft_backend.buffer object at 0x')
     assert bytes(buf) == b"hi there\x00"
     assert type(buf) is buffer
     if sys.version_info < (3,):
@@ -3250,7 +3250,7 @@ def test_setslice_array():
 def test_cdata_name_module_doc():
     p = new_primitive_type("signed char")
     x = cast(p, 17)
-    assert x.__module__ == '_cffi_backend'
+    assert x.__module__ == '_cffi_ft_backend'
     assert x.__name__ == '<cdata>'
     assert hasattr(x, '__doc__')
 
@@ -3805,7 +3805,7 @@ def test_from_buffer_bytearray():
 
 def test_from_buffer_more_cases():
     try:
-        from _cffi_backend import _testbuff
+        from _cffi_ft_backend import _testbuff
     except ImportError:
         pytest.skip("not for pypy")
     BChar = new_primitive_type("char")
@@ -4504,13 +4504,13 @@ def test_huge_structure():
     assert sizeof(BStruct) == sys.maxsize
 
 def test_get_types():
-    import _cffi_backend
+    import _cffi_ft_backend as _cffi_backend
     CData, CType = _get_types()
     assert CData is _cffi_backend._CDataBase
     assert CType is _cffi_backend.CType
 
 def test_type_available_with_correct_names():
-    import _cffi_backend
+    import _cffi_ft_backend as _cffi_backend
     check_names = [
         'CType',
         'CField',
@@ -4539,7 +4539,7 @@ def test_type_available_with_correct_names():
     for name in check_names:
         tp = getattr(_cffi_backend, name)
         assert isinstance(tp, type)
-        assert (tp.__module__, tp.__name__) == ('_cffi_backend', name)
+        assert (tp.__module__, tp.__name__) == ('_cffi_ft_backend', name)
 
 def test_unaligned_types():
     BByteArray = new_array_type(

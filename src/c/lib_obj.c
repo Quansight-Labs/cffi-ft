@@ -598,7 +598,7 @@ static PyMethodDef lib_methods[] = {
 
 static PyTypeObject Lib_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "_cffi_backend.Lib",
+    "_cffi_ft_backend.Lib",
     sizeof(LibObject),
     0,
     (destructor)lib_dealloc,                    /* tp_dealloc */

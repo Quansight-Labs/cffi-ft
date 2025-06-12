@@ -96,21 +96,21 @@ def test_large_constant():
     assert ffi.integer_const('BIGNEG') == -420000000000
 
 def test_function():
-    import _cffi_backend
+    import _cffi_ft_backend as _cffi_backend
     from re_python_pysrc import ffi
     lib = ffi.dlopen(extmod)
     assert lib.add42(-10) == 32
     assert type(lib.add42) is _cffi_backend.FFI.CData
 
 def test_function_with_varargs():
-    import _cffi_backend
+    import _cffi_ft_backend as _cffi_backend
     from re_python_pysrc import ffi
     lib = ffi.dlopen(extmod, 0)
     assert lib.add43(45, ffi.cast("int", -5)) == 45
     assert type(lib.add43) is _cffi_backend.FFI.CData
 
 def test_dlopen_none():
-    import _cffi_backend
+    import _cffi_ft_backend as _cffi_backend
     from re_python_pysrc import ffi
     name = None
     if sys.platform == 'win32':
@@ -122,7 +122,7 @@ def test_dlopen_none():
     assert lib.strlen(b"hello") == 5
 
 def test_dlclose():
-    import _cffi_backend
+    import _cffi_ft_backend as _cffi_backend
     from re_python_pysrc import ffi
     lib = ffi.dlopen(extmod)
     ffi.dlclose(lib)
@@ -226,7 +226,7 @@ def test_no_such_function_or_global_var():
         "symbol 'no_such_globalvar' not found in library '")
 
 def test_check_version():
-    import _cffi_backend
+    import _cffi_ft_backend as _cffi_backend
     e = pytest.raises(ImportError, _cffi_backend.FFI,
                        "foobar", _version=0x2594)
     assert str(e.value).startswith(
@@ -271,7 +271,7 @@ def test_selfref():
     ffi.new("selfref_ptr_t")
 
 def test_dlopen_handle():
-    import _cffi_backend
+    import _cffi_ft_backend as _cffi_backend
     from re_python_pysrc import ffi
     if sys.platform == 'win32' or is_musl or sys.platform.startswith('freebsd'):
         pytest.skip("uses 'dl' explicitly")

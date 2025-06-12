@@ -481,7 +481,7 @@ class Recompiler:
         #
         # header
         prnt("# auto-generated file")
-        prnt("import _cffi_backend")
+        prnt("import _cffi_ft_backend as _cffi_backend")
         #
         # the 'import' of the included ffis
         num_includes = len(self.ffi._included_ffis or ())

@@ -3,7 +3,7 @@ import pytest
 from testing.cffi0 import backend_tests, test_function, test_ownlib
 from testing.support import u
 from cffi import FFI
-import _cffi_backend
+import _cffi_ft_backend as _cffi_backend
 
 
 class TestFFI(backend_tests.BackendTests,

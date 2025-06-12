@@ -577,7 +577,7 @@ global_lock = allocate_lock()
 _typecache_cffi_backend = weakref.WeakValueDictionary()
 
 def get_typecache(backend):
-    # returns _typecache_cffi_backend if backend is the _cffi_backend
+    # returns _typecache_cffi_backend if backend is the _cffi_ft_backend
     # module, or type(backend).__typecache if backend is an instance of
     # CTypesBackend (or some FakeBackend class during tests)
     if isinstance(backend, types.ModuleType):

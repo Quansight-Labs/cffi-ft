@@ -4,7 +4,7 @@ from cffi import cffi_opcode
 
 
 def check(input, expected_output=None, expected_ffi_error=False):
-    import _cffi_backend
+    import _cffi_ft_backend as _cffi_backend
     ffi = _cffi_backend.FFI()
     if not expected_ffi_error:
         ct = ffi.typeof(input)
@@ -49,7 +49,7 @@ def test_all_primitives():
         check(name, name)
 
 def check_func(input, expected_output=None):
-    import _cffi_backend
+    import _cffi_ft_backend as _cffi_backend
     ffi = _cffi_backend.FFI()
     ct = ffi.typeof(ffi.callback(input, lambda: None))
     assert isinstance(ct, ffi.CType)

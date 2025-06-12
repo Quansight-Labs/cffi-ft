@@ -174,7 +174,7 @@ if __name__ == '__main__':
     # On PyPy, cffi is preinstalled and it is not possible, at least for now,
     # to install a different version.  We work around it by making the setup()
     # arguments mostly empty in this case.
-    cpython = ('_cffi_backend' not in sys.builtin_module_names)
+    cpython = ('_cffi_ft_backend' not in sys.builtin_module_names)
 
     setup(
         packages=['cffi'] if cpython else [],
@@ -186,7 +186,7 @@ if __name__ == '__main__':
 
         distclass=CFFIDistribution,
         ext_modules=[Extension(
-            name='_cffi_backend',
+            name='_cffi_ft_backend',
             include_dirs=include_dirs,
             sources=sources,
             libraries=libraries,

@@ -237,7 +237,7 @@ thread_canary_register(PyThreadState *tstate)
 
 static PyTypeObject ThreadCanary_Type = {
     PyVarObject_HEAD_INIT(NULL, 0)
-    "_cffi_backend.thread_canary",
+    "_cffi_ft_backend.thread_canary",
     sizeof(ThreadCanaryObj),
     0,
     (destructor)thread_canary_dealloc,          /* tp_dealloc */
