@@ -1604,7 +1604,7 @@ def test_callback_in_thread():
     from cffi_ft import _imp_emulation as imp
     arg = os.path.join(os.path.dirname(__file__), 'callback_in_thread.py')
     g = subprocess.Popen([sys.executable, arg,
-                          os.path.dirname(imp.find_module('cffi')[1])])
+                          os.path.dirname(imp.find_module('cffi_ft')[1])])
     result = g.wait()
     assert result == 0
 

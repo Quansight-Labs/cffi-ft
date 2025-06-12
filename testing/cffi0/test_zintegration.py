@@ -49,9 +49,9 @@ def create_venv(name):
     if site_packages:
         try:
             from cffi_ft import _pycparser
-            modules = ('cffi', '_cffi_ft_backend')
+            modules = ('cffi_ft', '_cffi_ft_backend')
         except ImportError:
-            modules = ('cffi', '_cffi_ft_backend', 'pycparser')
+            modules = ('cffi_ft', '_cffi_ft_backend', 'pycparser')
             try:
                 import ply
             except ImportError:
