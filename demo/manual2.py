@@ -1,7 +1,7 @@
 from __future__ import print_function
-import _cffi_ft_backend
+import _cffi_ft_backend as _cffi_backend
 
-ffi = _cffi_ft_backend.FFI(b"manual2",
+ffi = _cffi_backend.FFI(b"manual2",
     _version = 0x2601,
     _types = b'\x00\x00\x01\x0D\x00\x00\x07\x01\x00\x00\x00\x0F\x00\x00\x00\x09\x00\x00\x00\x0B\x00\x00\x01\x03',
     _globals = (b'\xff\xff\xff\x0bAA',0,b'\xff\xff\xff\x0bBB',-1,b'\xff\xff\xff\x0bCC',2,b'\xff\xff\xff\x1fFOO',0x9999999999999999,b'\x00\x00\x00#close',0,b'\x00\x00\x05#stdout',0),

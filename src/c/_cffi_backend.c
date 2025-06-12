@@ -248,9 +248,6 @@ static int PyWeakref_GetRef(PyObject *ref, PyObject **pobj)
 # define UNLOCK_UNIQUE_CACHE() ((void)0)
 #endif
 
-#define CFFI_BACKEND_MODULE_NAME "_cffi_ft_backend"
-#define CFFI_BACKEND_MODULE_NAME_LENGTH 16
-
 /************************************************************/
 
 /* base type flag: exactly one of the following: */
@@ -8210,7 +8207,7 @@ static struct { const char *name; int value; } all_dlopen_flags[] = {
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef FFIBackendModuleDef = {
   PyModuleDef_HEAD_INIT,
-  CFFI_BACKEND_MODULE_NAME,
+  "_cffi_ft_backend",
   NULL,
   -1,
   FFIBackendMethods,
@@ -8259,7 +8256,7 @@ init_cffi_backend(void)
 #if PY_MAJOR_VERSION >= 3
     m = PyModule_Create(&FFIBackendModuleDef);
 #else
-    m = Py_InitModule(CFFI_BACKEND_MODULE_NAME, FFIBackendMethods);
+    m = Py_InitModule("_cffi_ft_backend", FFIBackendMethods);
 #endif
 
     if (m == NULL)
@@ -8279,8 +8276,7 @@ init_cffi_backend(void)
     for (i = 0; all_types[i] != NULL; i++) {
         PyTypeObject *tp = all_types[i];
         PyObject *tpo = (PyObject *)tp;
-        if (strncmp(tp->tp_name, CFFI_BACKEND_MODULE_NAME".",
-                    CFFI_BACKEND_MODULE_NAME_LENGTH + 1) != 0) {
+        if (strncmp(tp->tp_name, "_cffi_ft_backend.", 17) != 0) {
             PyErr_Format(PyExc_ImportError,
                          "'%s' is an ill-formed type name", tp->tp_name);
             INITERROR;
@@ -8289,12 +8285,12 @@ init_cffi_backend(void)
             INITERROR;
 
         Py_INCREF(tpo);
-        if (PyModule_AddObject(m, tp->tp_name + CFFI_BACKEND_MODULE_NAME_LENGTH + 1, tpo) < 0)
+        if (PyModule_AddObject(m, tp->tp_name + 17, tpo) < 0)
             INITERROR;
     }
 
     if (!init_done) {
-        v = PyText_FromString(CFFI_BACKEND_MODULE_NAME);
+        v = PyText_FromString("_cffi_ft_backend");
         if (v == NULL || PyDict_SetItemString(CData_Type.tp_dict,
                                               "__module__", v) < 0)
             INITERROR;
