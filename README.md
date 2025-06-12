@@ -54,6 +54,26 @@ except ImportError:
 
 This will import `cffi_ft` if it's available and use upstream CFFI otherwise.
 
+### Different setuptools `setup` keyword
+
+You will also need to adjust the `cffi_modules` keyword in the call to the
+`setup` function in your `setup.py` script. To avoid ambiguity in situations
+where both `cffi` and `cffi-ft` are installed, `cffi-ft` uses a `setup` keyword
+named `cffi_ft_modules`. You can provide both in your `setup` call. It might
+look something like this:
+
+```python
+setup(
+    ...
+    cffi_modules=["src/my_module/_ffi_build.py:ffi"],
+    cffi_ft_modules=["src/my_module/_ffi_build.py:ffi"],
+    ...
+)
+```
+
+Documentation
+-------------
+
 Please see the [Documentation] or uncompiled in the `doc/` subdirectory. Note
 that we have not modified the imports in the documentation.
 
