@@ -1,4 +1,4 @@
-name: CFFI CI
+name: CFFI-ft CI
 
 on:
   push:
@@ -49,7 +49,7 @@ jobs:
         python -m build --sdist
 
         echo "sdist_artifact_name=$(ls ./dist)" >> "$GITHUB_OUTPUT"
-        echo "package_version=$(ls ./dist | sed -En 's/cffi-(.+)\.tar\.gz/\1/p')" >> "$GITHUB_OUTPUT"
+        echo "package_version=$(ls ./dist | sed -En 's/cffi_ft-(.+)\.tar\.gz/\1/p')" >> "$GITHUB_OUTPUT"
 
     - name: upload sdist artifact
       uses: actions/upload-artifact@v4
@@ -178,7 +178,7 @@ jobs:
 
         mkdir cffi
 
-        tar zxf ${{ steps.fetch_sdist.outputs.download-path }}/cffi*.tar.gz --strip-components=1 -C cffi
+        tar zxf ${{ steps.fetch_sdist.outputs.download-path }}/cffi_ft*.tar.gz --strip-components=1 -C cffi
         python -m pip install cibuildwheel==2.23.3
 
         # actually build libffi + wheel (using env tweaks above)
@@ -266,7 +266,7 @@ jobs:
 
         mkdir cffi
 
-        tar zxf ${{ steps.fetch_sdist.outputs.download-path }}/cffi*.tar.gz --strip-components=1 -C cffi
+        tar zxf ${{ steps.fetch_sdist.outputs.download-path }}/cffi_ft*.tar.gz --strip-components=1 -C cffi
 
         python3 -m cibuildwheel --output-dir dist cffi
 
@@ -332,7 +332,7 @@ jobs:
 
         mkdir cffi
 
-        tar zxf cffi*.tar.gz --strip-components=1 -C cffi
+        tar zxf cffi_ft*.tar.gz --strip-components=1 -C cffi
 
         python -m pip install --upgrade pip
         pip install cibuildwheel==2.23.3
