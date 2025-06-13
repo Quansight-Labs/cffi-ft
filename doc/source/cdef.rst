@@ -105,9 +105,9 @@ In order of complexity:
 
     setup(
         ...,
-        setup_requires=["cffi>=1.0.0"],
+        setup_requires=["cffi_ft>=1.0.0"],
         cffi_ft_modules=["package/foo_build.py:ffibuilder"],
-        install_requires=["cffi>=1.0.0"],
+        install_requires=["cffi_ft>=1.0.0"],
     )
 
   Note again that the ``foo_build.py`` example contains the following

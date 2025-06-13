@@ -1,5 +1,5 @@
-[![GitHub Actions Status](https://github.com/python-cffi/cffi/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/python-cffi/cffi/actions/workflows/ci.yaml?query=branch%3Amain++)
-[![PyPI version](https://img.shields.io/pypi/v/cffi.svg)](https://pypi.org/project/cffi)
+[![GitHub Actions Status](https://github.com/Quansight-Labs/cffi-ft/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/Quansight-Labs/cffi-ft/actions/workflows/ci.yaml?query=branch%3Amain++)
+[![PyPI version](https://img.shields.io/pypi/v/cffi.svg)](https://pypi.org/project/cffi-ft)
 [![Read the Docs](https://img.shields.io/badge/docs-latest-blue.svg)][Documentation]
 
 
@@ -21,10 +21,21 @@ wheels or experiment with the free-threaded build, you can add a dependency on
 the `cffi-ft` on Python 3.13 and newer. For example, in a `pyproject.toml` file:
 
 ```toml
-dependencies = [
-    ...,
+
+[build-system]
+requires = [
+    ...
     "cffi; python_version<'3.13'",
     "cfft-ft; python_version>='3.13'",
+    ...
+]
+
+[project]
+dependencies = [
+    ...
+    "cffi; python_version<'3.13'",
+    "cfft-ft; python_version>='3.13'",
+    ...
 ]
 ```
 
@@ -52,7 +63,8 @@ except ImportError:
     import cffi
 ```
 
-This will import `cffi_ft` if it's available and use upstream CFFI otherwise.
+This will preferentially import `cffi_ft` if it's available and use upstream
+CFFI otherwise.
 
 ### Different setuptools `setup` keyword
 
