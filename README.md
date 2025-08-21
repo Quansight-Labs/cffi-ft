@@ -3,6 +3,12 @@
 [![Read the Docs](https://img.shields.io/badge/docs-latest-blue.svg)][Documentation]
 
 
+ARCHIVED
+========
+
+This repository is now archived. Please use the upstream version of CFFI.
+CFFI 2.0 or newer supports the free-threaded build.
+
 CFFI
 ====
 
